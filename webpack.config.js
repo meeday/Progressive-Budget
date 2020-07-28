@@ -10,18 +10,25 @@ const config = {
   mode: "development",
   plugins: [
     new WebpackPwaManifest({
+
+      filename: "manifest.json",
+
+      inject: false,
+
+      fingerprints: false,
+
       name: "Progressive Budget App",
       short_name: "Budget App",
       description: "An application that tracks a users budget",
-      background_color: "#dddddd",
+      background_color: "#ffffff",
       theme_color: "#ffffff",
-      "theme_color": "#ffffff",
       start_url: "/",
+      display: "standalone",
+
       icons: [
         {
           src: path.resolve("public/icons/icon-192x192.png"),
           sizes: [192, 512],
-          destination: path.join("public", "icons")
         }
       ]
     })
