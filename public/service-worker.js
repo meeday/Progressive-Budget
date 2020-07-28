@@ -4,8 +4,8 @@ const FILES_TO_CACHE = [
   "/styles.css",
   "/dist/manifest.json",
   "/dist/bundle.js",
-  "/dist/icon-192x192.png",
-  "/dist/icon-192x192.png",
+  "/dist/public/icons/icon-192x192.png",
+  "/dist/public/icons/icon-192x192.png",
 ];
 
 const CACHE_NAME = "static-cache-v1";

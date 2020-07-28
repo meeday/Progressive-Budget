@@ -24,11 +24,12 @@ const config = {
       theme_color: "#ffffff",
       start_url: "/",
       display: "standalone",
-
+      
       icons: [
         {
           src: path.resolve("public/icons/icon-192x192.png"),
           sizes: [192, 512],
+          destination: path.join("public", "icons")
         }
       ]
     })
