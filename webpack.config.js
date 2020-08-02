@@ -5,12 +5,25 @@ const config = {
   entry: "./public/index.js",
   output: {
     path: __dirname + "/public/dist",
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   mode: "development",
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+    ],
+  },
   plugins: [
     new WebpackPwaManifest({
-
       filename: "manifest.json",
 
       inject: false,
@@ -23,33 +36,16 @@ const config = {
       background_color: "#ffffff",
       theme_color: "#ffffff",
       start_url: "/",
-      display: "standalone",
-      
+
       icons: [
         {
           src: path.resolve("public/icons/icon-192x192.png"),
           sizes: [192, 512],
-          destination: path.join("public", "icons")
-        }
-      ]
-    })
+          destination: path.join("assets", "icons"),
+        },
+      ],
+    }),
   ],
-
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"]
-          }
-        }
-
-      }
-    ]
-  }
 };
 
 module.exports = config;
