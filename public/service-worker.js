@@ -2,22 +2,23 @@ const FILES_TO_CACHE = [
   "/",
   "/index.html",
   "/styles.css",
-  "/dist/manifest.json",
   "/dist/bundle.js",
-  "/dist/public/icons/icon-192x192.png",
-  "/dist/public/icons/icon-192x192.png",
+  "/dist/assets/icons/icon_192x192.png",
+  "/dist/assets/icons/icon_512x512.png",
 ];
 
 const CACHE_NAME = "static-cache-v1";
-const DATA_CACHE_NAME = "data-cache-v1";
+const DATA_CACHE_NAME = "data-cache";
+
+const populateCache = async (cacheName, assets) => {
+  const cache = await caches.open(cacheName);
+  await cache.addAll(assets);
+  self.skipWaiting();
+  return;
+}
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(FILES_TO_CACHE))
-      .then(() => self.slipWaiting())
-  );
+  event.waitUntil(populateCache(CACHE_NAME, FILES_TO_CACHE));
 });
 
 self.addEventListener("activate", (event) => {
@@ -37,7 +38,7 @@ self.addEventListener("activate", (event) => {
           })
         );
       })
-      .then(() => self.Clients.claim())
+      .then(() => self.clients.claim())
   );
 });
 
@@ -52,7 +53,7 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.url.includes("/api/transaction")) {
     event.respondWith(
-      caches.open(DATA_CACHE_NAME).then((cache) => {
+      caches.open(DATA_CACHE_NAME).then(cache => {
         return fetch(event.request)
           .then((response) => {
             cache.put(event.request, response.clone());
@@ -70,7 +71,7 @@ self.addEventListener("fetch", (event) => {
         return cachedResponse;
       }
 
-      return caches.open(DATA_CACHE_NAME).then((cache) => {
+      return caches.open(DATA_CACHE_NAME).then(cache => {
         return fetch(event.request).then((response) => {
           return cache.put(event.request, response.clone()).then(() => {
             return response;
