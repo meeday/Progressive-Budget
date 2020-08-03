@@ -1,11 +1,11 @@
 let db;
 // Create new db request on DB called 'budget'
-const request = indexedDB.open("progressive-budget", 1);
+const request = indexedDB.open("budget", 1);
 
 request.onupgradeneeded = (event) => {
   // Creation of object store called 'pending'
   const db = event.target.result;
-  db.createObjectStore("newTransactions", { autoIncrement: true });
+  db.createObjectStore("pending", { autoIncrement: true });
 };
 
 request.onsuccess = (event) => {
@@ -17,24 +17,22 @@ request.onsuccess = (event) => {
 };
 
 request.onerror = (event) => {
-  console.log("Request Error: " + event.target.errorCode);
+  console.log("Woops! " + event.target.errorCode);
 };
 
 const saveRecord = (record) => {
-  // Creation of transaction on the pending object store with readwrite access
-  console.log(record);
-  const transaction = db.transaction(["newTransactions"], "readwrite");
-  const store = transaction.objectStore("newTransactions");
+
+  const transaction = db.transaction(["pending"], "readwrite");
+  const store = transaction.objectStore("pending");
   store.add(record);
 };
 
 const checkDatabase = () => {
-  console.log("Checking database");
-  const transaction = db.transaction(["newTransactions"], "readwrite");
-  const store = transaction.objectStore("newTransactions");
+  const transaction = db.transaction(["pending"], "readwrite");
+  const store = transaction.objectStore("pending");
   const getAll = store.getAll();
 
-  getAll.onsuccess = function () {
+  getAll.onsuccess = () => {
     if (getAll.result.length > 0) {
       fetch("/api/transaction/bulk", {
         method: "POST",
@@ -44,20 +42,20 @@ const checkDatabase = () => {
           "Content-Type": "application/json",
         },
       })
-        .then((response) => response.json())
+        .then(response => response.json())
         .then(() => {
           // if successful, open a transaction on your pending db
-          const transaction = db.transaction(["newTransaction"], "readwrite");
+          const transaction = db.transaction(["pending"], "readwrite");
 
           // access your pending object store
-          const store = transaction.objectStore("newTransaction");
+          const store = transaction.objectStore("pending");
 
           // clear all items in your store
           store.clear();
         });
     }
   };
-};
+}
 
 window.addEventListener("online", checkDatabase);
 
@@ -65,9 +63,7 @@ let transactions = [];
 let myChart;
 
 fetch("/api/transaction")
-  .then((response) => {
-    return response.json();
-  })
+  .then(response => response.json())
   .then((data) => {
     // save db data on global variable
     transactions = data;
@@ -185,9 +181,7 @@ function sendTransaction(isAdding) {
       "Content-Type": "application/json",
     },
   })
-    .then((response) => {
-      return response.json();
-    })
+    .then(response => response.json())
     .then((data) => {
       if (data.errors) {
         errorEl.textContent = "Missing Information";

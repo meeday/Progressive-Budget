@@ -56,6 +56,8 @@ self.addEventListener("fetch", (event) => {
       caches.open(DATA_CACHE_NAME).then(cache => {
         return fetch(event.request)
           .then((response) => {
+            console.log(event.request);
+            debugger
             cache.put(event.request, response.clone());
             return response;
           })
