@@ -33,8 +33,8 @@ const config = {
       name: "Progressive Budget App",
       short_name: "Budget App",
       description: "An application that tracks a users budget",
-      background_color: "#ffffff",
-      theme_color: "#ffffff",
+      background_color: "#01579b",
+      theme_color: "#317EFB",
       start_url: "/",
 
       icons: [
