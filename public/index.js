@@ -32,7 +32,7 @@ const checkDatabase = () => {
   const store = transaction.objectStore("pending");
   const getAll = store.getAll();
 
-  getAll.onsuccess = () => {
+  getAll.onsuccess = function () {
     if (getAll.result.length > 0) {
       fetch("/api/transaction/bulk", {
         method: "POST",
@@ -55,7 +55,7 @@ const checkDatabase = () => {
         });
     }
   };
-}
+};
 
 window.addEventListener("online", checkDatabase);
 
@@ -63,7 +63,9 @@ let transactions = [];
 let myChart;
 
 fetch("/api/transaction")
-  .then(response => response.json())
+  .then(response => {
+    return response.json()
+  })
   .then((data) => {
     // save db data on global variable
     transactions = data;
